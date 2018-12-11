@@ -35,13 +35,23 @@ struct Item: VendingItem {
     var quantity: Int
 }
 
+enum InventoryError: Error {
+    case invalidResourse
+    case conversionFailure
+}
+
 // object that converts data from plist to dictionary
 class PlistConventer {
     // static method because we don't need this data once conversion is done
     static func dictionary(fromFile name: String, ofType type: String) throws -> [String: AnyObject] {
         guard let path = Bundle.main.path(forResource: name, ofType: type) else {
-            
+            throw InventoryError.invalidResourse
         }
+        // the best option is to use NSDictionary with contentsOffile method
+        guard let dictionary = NSDictionary(contentsOfFile: path) as? [String: AnyObject] else {
+            throw InventoryError.conversionFailure
+        }
+        return dictionary
     }
 }
 
