@@ -35,6 +35,18 @@ struct Item: VendingItem {
     var quantity: Int
 }
 
+// object that converts data from plist to dictionary
+class PlistConventer {
+    // static method because we don't need this data once conversion is done
+    static func dictionary(fromFile name: String, ofType type: String) throws -> [String: AnyObject] {
+        guard let path = Bundle.main.path(forResource: name, ofType: type) else {
+            
+        }
+    }
+}
+
+// object that converts data from dictionary to inventory Vending Item
+
 class FoodVendingMachine: VendingMachine {
     
     let selection: [VendingSelection] = [.soda, .dietSoda, .chips,. cookie, .sandwich, .wrap, .candyBar, .popTart, .water, .fruitJuice, .sportsDrink, .gum]
