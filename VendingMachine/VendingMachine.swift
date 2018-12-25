@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 enum VendingSelection: String {
     case soda
@@ -13,6 +14,14 @@ enum VendingSelection: String {
     case fruitJuice
     case sportsDrink
     case gum
+    
+    func icon() -> UIImage {
+        if let image = UIImage(named: self.rawValue) {
+            return image
+        } else {
+            return UIImage(named: "default")!
+        }
+    }
 }
 
 protocol VendingItem {
