@@ -10,10 +10,27 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet weak var balanceLabel: UILabel!
     @IBOutlet weak var quantityLabel: UILabel!
     @IBOutlet weak var priceLabel: UILabel!
+    
+    let vendineMachine: VendingMachine
+    
+    required init?(coder aDecoder: NSCoder) {
+        do {
+            let dictionary = try PlistConventer.dictionary(fromFile: "VendingInventory", ofType: "plist")
+            let inventory = try InventoryUnarchiver.vendingInvetory(fromDictionary: dictionary)
+            self.vendineMachine = FoodVendingMachine(inventory: inventory)
+        } catch let error {
+            fatalError("\(error)")
+        }
+        
+        super.init(coder: aDecoder)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupCollectionViewCells()
+        
+        print(vendineMachine.inventory)
     }
     
     // MARK: - Setup
