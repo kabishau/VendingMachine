@@ -1,6 +1,6 @@
 import Foundation
 
-enum VendingSelection {
+enum VendingSelection: String {
     case soda
     case dietSoda
     case chips
@@ -38,6 +38,7 @@ struct Item: VendingItem {
 enum InventoryError: Error {
     case invalidResourse
     case conversionFailure
+    case invalidSelection
 }
 
 // object that converts data from plist to dictionary
@@ -52,6 +53,28 @@ class PlistConventer {
             throw InventoryError.conversionFailure
         }
         return dictionary
+    }
+}
+
+class InventoryUnarchiver {
+    static func vendingInvetory(fromDictionary dictionary: [String: AnyObject]) throws -> [VendingSelection: VendingItem] {
+        
+        var inventory: [VendingSelection: VendingItem] = [:]
+        
+        for (key, value) in dictionary {
+            if let itemDictionary = value as? [String: Any], let price = itemDictionary["price"] as? Double, let quantity = itemDictionary["quantity"] as? Int {
+                
+                let item = Item(price: price, quantity: quantity)
+                
+                guard let selection = VendingSelection(rawValue: key) else {
+                    throw InventoryError.invalidSelection
+                }
+                
+                inventory.updateValue(item, forKey: selection)
+            }
+        }
+        
+        return inventory
     }
 }
 
