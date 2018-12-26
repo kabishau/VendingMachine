@@ -13,6 +13,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     let vendineMachine: VendingMachine
     var currentSelection: VendingSelection?
+    var quantity = 1
     
     required init?(coder aDecoder: NSCoder) {
         do {
@@ -50,7 +51,21 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         collectionView.collectionViewLayout = layout
     }
     
-    // MARK: UICollectionViewDataSource
+    // MARK: - Vending Machine
+    
+    @IBAction func purchase() {
+        if let currentSelection = currentSelection {
+            do {
+                try vendineMachine.vend(selection: currentSelection, quantity: quantity)
+            } catch {
+                // FIXME: Error handling code
+            }
+        } else {
+            // FIXME: Alert user about no selection
+        }
+    }
+    
+    // MARK: - UICollectionViewDataSource
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return vendineMachine.selection.count
