@@ -12,6 +12,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet weak var priceLabel: UILabel!
     
     let vendineMachine: VendingMachine
+    var currentSelection: VendingSelection?
     
     required init?(coder aDecoder: NSCoder) {
         do {
@@ -30,7 +31,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         setupCollectionViewCells()
         
-        print(vendineMachine.inventory)
     }
     
     // MARK: - Setup
@@ -69,6 +69,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         updateCell(having: indexPath, selected: true)
+        
+        currentSelection = vendineMachine.selection[indexPath.row]
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
