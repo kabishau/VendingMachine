@@ -32,6 +32,9 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         setupCollectionViewCells()
         
+        balanceLabel.text = "$\(vendineMachine.amountDeposited)"
+        totalLabel.text = "$0.00"
+        priceLabel.text = "$0.00"
     }
     
     // MARK: - Setup
@@ -57,12 +60,26 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         if let currentSelection = currentSelection {
             do {
                 try vendineMachine.vend(selection: currentSelection, quantity: quantity)
+                updateDisplay()
             } catch {
                 // FIXME: Error handling code
+            }
+            // deselecting item
+            if let indexPath = collectionView.indexPathsForSelectedItems?.first {
+                collectionView.deselectItem(at: indexPath, animated: true)
+                updateCell(having: indexPath, selected: false)
             }
         } else {
             // FIXME: Alert user about no selection
         }
+    }
+    
+    // helper method
+    func updateDisplay() {
+        balanceLabel.text = "$\(vendineMachine.amountDeposited)"
+        priceLabel.text = "$0.00"
+        totalLabel.text = "$0.00"
+        
     }
     
     // MARK: - UICollectionViewDataSource
