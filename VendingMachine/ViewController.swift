@@ -86,6 +86,12 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         updateCell(having: indexPath, selected: true)
         
         currentSelection = vendineMachine.selection[indexPath.row]
+        if let currentSelection = currentSelection {
+            if let item = vendineMachine.item(forSelection: currentSelection) {
+                priceLabel.text = "$\(item.price)"
+                totalLabel.text = "$\(item.price * Double(quantity))"
+            }
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
