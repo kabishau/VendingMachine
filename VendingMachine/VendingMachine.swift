@@ -131,6 +131,7 @@ class FoodVendingMachine: VendingMachine {
         
     }
     
+    // helper method
     func item(forSelection selection: VendingSelection) -> VendingItem? {
         return inventory[selection]
     }
