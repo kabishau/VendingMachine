@@ -14,7 +14,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     let vendineMachine: VendingMachine
     var currentSelection: VendingSelection?
-    var quantity = 1
     
     required init?(coder aDecoder: NSCoder) {
         do {
@@ -33,10 +32,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         setupCollectionViewCells()
         
-        balanceLabel.text = "$\(vendineMachine.amountDeposited)"
-        totalLabel.text = "$0.00"
-        priceLabel.text = "$0.00"
-        quantityLabel.text = "\(quantity)"
+        updateDisplayWith(balance: vendineMachine.amountDeposited, price: 0.0, totalPrice: 0.0, itemQuantity: 1)
     }
     
     // MARK: - Setup
@@ -61,8 +57,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     @IBAction func purchase() {
         if let currentSelection = currentSelection {
             do {
-                try vendineMachine.vend(selection: currentSelection, quantity: quantity)
-                updateDisplay()
+                try vendineMachine.vend(selection: currentSelection, quantity: Int(quantityStepper.value))
+                updateDisplayWith(balance: vendineMachine.amountDeposited, price: 0.0, totalPrice: 0.0, itemQuantity: 1)
             } catch {
                 // FIXME: Error handling code
             }
@@ -77,21 +73,34 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     // helper method
-    func updateDisplay() {
-        balanceLabel.text = "$\(vendineMachine.amountDeposited)"
-        priceLabel.text = "$0.00"
-        totalLabel.text = "$0.00"
+    func updateDisplayWith(balance: Double? = nil, price: Double? = nil, totalPrice: Double? = nil, itemQuantity: Int? = nil) {
         
+        if let balanceValue = balance {
+            balanceLabel.text = "$\(balanceValue)"
+        }
+        
+        if let priceValue = price {
+            priceLabel.text = "$\(priceValue)"
+        }
+        
+        if let totalPriceValue = totalPrice {
+            totalLabel.text = "$\(totalPriceValue)"
+        }
+        
+        if let quantityValue = itemQuantity {
+            quantityLabel.text = "\(quantityValue )"
+        }
     }
     
     func updateTotalPrice(for item: VendingItem) {
-        totalLabel.text = "$\(item.price * Double(quantity))"
+        let totalPrice = item.price * quantityStepper.value
+        updateDisplayWith(totalPrice: totalPrice)
     }
     
     @IBAction func updateQuantity(_ sender: UIStepper) {
-        print(sender.value)
-        quantity = Int(sender.value)
-        quantityLabel.text = "\(quantity)"
+        
+        let quantity = Int(quantityStepper.value)
+        updateDisplayWith(itemQuantity: quantity)
         
         if let currentSelection = currentSelection {
             if let item = vendineMachine.item(forSelection: currentSelection) {
@@ -121,16 +130,15 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         updateCell(having: indexPath, selected: true)
         
         quantityStepper.value = 1
-        quantityLabel.text = "1"
-        quantity = 1
-        
-        totalLabel.text = "$0.00"
+        updateDisplayWith(totalPrice: 0.0, itemQuantity: 1)
         
         currentSelection = vendineMachine.selection[indexPath.row]
         if let currentSelection = currentSelection {
             if let item = vendineMachine.item(forSelection: currentSelection) {
                 priceLabel.text = "$\(item.price)"
-                totalLabel.text = "$\(item.price * Double(quantity))"
+                totalLabel.text = "$\(item.price * quantityStepper.value)"
+                let totalPrice = item.price * quantityStepper.value
+                updateDisplayWith(price: item.price, totalPrice: totalPrice)
             }
         }
     }
