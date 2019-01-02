@@ -59,8 +59,10 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             do {
                 try vendineMachine.vend(selection: currentSelection, quantity: Int(quantityStepper.value))
                 updateDisplayWith(balance: vendineMachine.amountDeposited, price: 0.0, totalPrice: 0.0, itemQuantity: 1)
+            } catch VendingMachineError.outOfStock {
+                showAlert()
             } catch {
-                // FIXME: Error handling code
+                
             }
             // deselecting item
             if let indexPath = collectionView.indexPathsForSelectedItems?.first {
@@ -107,6 +109,11 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
                 updateTotalPrice(for: item)
             }
         }
+    }
+    
+    func showAlert() {
+        let alertController = UIAlertController(title: "Out of Stock", message: "Item is unavailable. Please make another selection", preferredStyle: .alert)
+        present(alertController, animated: true, completion: nil)
     }
     
     // MARK: - UICollectionViewDataSource
