@@ -128,7 +128,7 @@ class FoodVendingMachine: VendingMachine {
     }
     
     func deposit(_ amount: Double) {
-        
+        amountDeposited += amount
     }
     
     // helper method

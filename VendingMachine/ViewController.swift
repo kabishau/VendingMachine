@@ -72,10 +72,12 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             // deselecting item
             if let indexPath = collectionView.indexPathsForSelectedItems?.first {
                 collectionView.deselectItem(at: indexPath, animated: true)
+                self.currentSelection = nil
                 updateCell(having: indexPath, selected: false)
             }
         } else {
             // FIXME: Alert user about no selection
+            showAlert(title: "No Selection", message: "Please select item before making a purchase")
         }
     }
     
@@ -115,6 +117,11 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             }
         }
     }
+    
+    @IBAction func depositFunds() {
+        vendineMachine.deposit(5.0)
+        updateDisplayWith(balance: vendineMachine.amountDeposited)
+    }
    
     func showAlert(title: String, message: String, style: UIAlertControllerStyle = .alert) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: style)
@@ -127,8 +134,10 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     // this function type matches handler type of UIAlertAction init
     func dismissAlert(sender: UIAlertAction) -> Void {
-        updateDisplayWith(balance: 0.0, price: 0.0, totalPrice: 0.0, itemQuantity: 1)
+        updateDisplayWith(price: 0.0, totalPrice: 0.0, itemQuantity: 1)
     }
+    
+    
     
     // MARK: - UICollectionViewDataSource
     
